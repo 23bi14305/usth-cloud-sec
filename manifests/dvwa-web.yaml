@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dvwa-web
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30001
+  selector:
+    app: dvwa-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dvwa-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dvwa-web
+  template:
+    metadata:
+      labels:
+        app: dvwa-web
+    spec:
+      containers:
+      - name: dvwa
+        image: vulnerables/web-dvwa
+        ports:
+        - containerPort: 80
+        env:
+        - name: DVWA_DB_SERVER
+          value: "dvwa-db"
+        - name: SECURITY_LEVEL
+          value: "LOW" 
