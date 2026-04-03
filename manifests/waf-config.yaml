@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: waf-config
+data:
+  custom-rules.conf: |
+    # --- Custom Security Rules ---
+    SecRuleEngine On
+
+    # Example: Block basic XSS attempts
+    SecRule ARGS "<script>" \
+        "id:1000001,phase:2,deny,status:403,msg:'XSS attempt detected by custom rule'"
+
+    # Example: Block common SQLi patterns
+    SecRule ARGS "(?i)(?:'|\"|%27|%22)\s*(?:or|and)\s+(?:'|\"|%27|%22)?[0-9a-z]+\b\s*(?:'|\"|%27|%22)?\s*=\s*(?:'|\"|%27|%22)?[0-9a-z]+" \
+        "id:1000002,phase:2,deny,status:403,msg:'SQL Injection attempt detected by custom rule'"
