@@ -14,10 +14,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install kubeval
+    - name: Install kubeconform
       run: |
-        curl -sL https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
-        sudo mv kubeval /usr/local/bin
+        curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+        sudo mv kubeconform /usr/local/bin
+    
+    - name: Validate manifests
+      run: |
+        kubeconform \
+          -strict \
+          -ignore-missing-schemas \
+          manifests/
 
     - name: Validate YAML files
       run: |
