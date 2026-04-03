@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waf-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waf-proxy
+  template:
+    metadata:
+      labels:
+        app: waf-proxy
+    spec:
+      containers:
+        - name: waf-proxy
+          image: owasp/modsecurity-crs:nginx
+          ports:
+            - containerPort: 80
+          env:
+            - name: BACKEND
+              value: "http://dvwa-web:80"
+            - name: MODSEC_RULE_ENGINE
+              value: "On"
+            - name: PARANOIA
+              value: "1"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: waf-config-volume
+              mountPath: /etc/modsecurity.d/owasp-crs/rules/custom-rules.conf
+              subPath: custom-rules.conf
+      volumes:
+        - name: waf-config-volume
+          configMap:
+            name: waf-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: waf-service
+spec:
+  type: NodePort
+  selector:
+    app: waf-proxy
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30005
