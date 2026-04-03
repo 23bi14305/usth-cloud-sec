@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: waf-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://dvwa-web; # Send traffic to your DVWA service
+            proxy_set_header Host $host;
+            
+            # Enable ModSecurity
+            modsecurity on;
+            modsecurity_rules_file /etc/nginx/modsec/main.conf;
+        }
+    }
