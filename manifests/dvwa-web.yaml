@@ -28,10 +28,6 @@ spec:
       containers:
       - name: dvwa
         image: vulnerables/web-dvwa
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsNonRoot: true
-          runAsUser: 1000
         ports:
         - containerPort: 80
         env:
