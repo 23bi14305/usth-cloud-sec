@@ -5,7 +5,7 @@ metadata:
 data:
   custom-rules.conf: |
     # --- Custom Security Rules ---
-    SecRuleEngine DetectionOnly
+    SecRuleEngine On
 
     # Example: Block basic XSS attempts
     SecRule ARGS "<script>" \
